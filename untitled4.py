@@ -38,9 +38,7 @@ import pandas as pd
 import zipfile
 import os
 
-zip_file = 'gadm41_MYS_shp.zip'
-with zipfile.ZipFile(zip_file, 'r') as zip_ref:
-    zip_ref.extractall('gadm41_MYS_shp')
+
 
 # Load the shapefile using GeoPandas
 shapefile_path = 'gadm41_MYS_shp/gadm41_MYS_1.shp'  # Adjust path if necessary
