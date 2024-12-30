@@ -42,10 +42,7 @@ import os
 
 
 
-# Extract relevant data (e.g., Name, Latitude, Longitude, and Description)
-# Assuming the shapefile contains relevant information in columns
-print("\nColumns in the shapefile:")
-print(gdf.columns)
+
 
 # If you need to compute centroids for mapping
 gdf['Latitude'] = gdf.geometry.centroid.y
