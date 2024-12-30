@@ -3,40 +3,40 @@ import pandas as pd
 import streamlit as st
 from streamlit_folium import st_folium
 
-# 上传文件功能
-st.title("马来西亚旅游景点地图")
-uploaded_file = st.file_uploader("上传包含旅游景点的 CSV 文件", type=["csv"])
+# File upload feature
+st.title("Map of Tourist Attractions in Malaysia")
+uploaded_file = st.file_uploader("Upload a CSV file containing tourist attractions", type=["csv"])
 
 if uploaded_file:
-    # 读取用户上传的 CSV 文件
+    # Read the CSV file uploaded by the user
     df = pd.read_csv(uploaded_file)
 
-    # 验证数据是否包含必要列
+    # Verify if the required columns are present
     required_columns = {'Name', 'Description', 'Latitude', 'Longitude'}
     if not required_columns.issubset(df.columns):
-        st.error(f"CSV 文件缺少必要列：{required_columns - set(df.columns)}")
+        st.error(f"The CSV file is missing the required columns: {required_columns - set(df.columns)}")
     else:
-        # 自动分类景点类型（如果没有提供）
+        # Automatically classify attraction types (if not provided)
         if 'Type' not in df.columns:
             df['Type'] = [
                 'Natural' if i % 3 == 0 else 'Cultural' if i % 3 == 1 else 'Historical'
                 for i in range(len(df))
             ]
 
-        # 显示上传的前几行数据
-        st.write("已加载数据：")
+        # Display the first few rows of the uploaded data
+        st.write("Loaded data:")
         st.write(df.head())
 
-        # 地图中心设置为马来西亚
-        map_center = [4.2105, 101.9758]  # 马来西亚的中心坐标
+        # Set map center to Malaysia
+        map_center = [4.2105, 101.9758]  # Coordinates for the center of Malaysia
         tourist_map = folium.Map(location=map_center, zoom_start=6)
 
-        # 创建不同类型景点的分组
-        natural_group = folium.FeatureGroup(name='自然景点')
-        cultural_group = folium.FeatureGroup(name='文化景点')
-        historical_group = folium.FeatureGroup(name='历史景点')
+        # Create groups for different types of attractions
+        natural_group = folium.FeatureGroup(name='Natural Attractions')
+        cultural_group = folium.FeatureGroup(name='Cultural Attractions')
+        historical_group = folium.FeatureGroup(name='Historical Attractions')
 
-        # 添加标记
+        # Add markers
         for _, row in df.iterrows():
             name = row['Name']
             description = row['Description']
@@ -44,7 +44,7 @@ if uploaded_file:
             longitude = row['Longitude']
             type_ = row['Type']
 
-            # 根据类型设置标记颜色和图标
+            # Set marker color and icon based on type
             if type_ == 'Historical':
                 color = 'red'
                 icon = 'info-sign'
@@ -60,9 +60,9 @@ if uploaded_file:
             else:
                 color = 'gray'
                 icon = 'question'
-                group = natural_group  # 默认分类
+                group = natural_group  # Default category
 
-            # 添加标记
+            # Add marker
             popup_text = f"<b>{name}</b><br>{description}"
             folium.Marker(
                 location=[latitude, longitude],
@@ -70,26 +70,26 @@ if uploaded_file:
                 icon=folium.Icon(color=color, icon=icon)
             ).add_to(group)
 
-        # 添加分组到地图
+        # Add groups to the map
         natural_group.add_to(tourist_map)
         cultural_group.add_to(tourist_map)
         historical_group.add_to(tourist_map)
 
-        # 添加图层控制
+        # Add layer control
         folium.LayerControl().add_to(tourist_map)
 
-        # 显示景点总数
+        # Display total number of attractions
         total_attractions = len(df)
-        total_popup_text = f"总景点数：{total_attractions}"
+        total_popup_text = f"Total number of attractions: {total_attractions}"
         folium.Marker(
             location=map_center,
             popup=folium.Popup(total_popup_text, max_width=250),
             icon=folium.Icon(color='blue', icon='info-sign')
         ).add_to(tourist_map)
 
-        # 在 Streamlit 中展示地图
+        # Display the map in Streamlit
         st_folium(tourist_map, width=700, height=500)
 
-        # 在侧边栏显示总景点数
-        st.sidebar.header("旅游景点概览")
-        st.sidebar.write(f"总景点数：{total_attractions}")
+        # Display total number of attractions in the sidebar
+        st.sidebar.header("Overview of Tourist Attractions")
+        st.sidebar.write(f"Total number of attractions: {total_attractions}")
