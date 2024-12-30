@@ -44,18 +44,6 @@ import os
 
 
 
-# If you need to compute centroids for mapping
-gdf['Latitude'] = gdf.geometry.centroid.y
-gdf['Longitude'] = gdf.geometry.centroid.x
-
-# Select relevant columns for tourist attractions
-# Adjust column names as per your data
-df_cleaned = gdf[['NAME_1', 'Latitude', 'Longitude']].copy()
-df_cleaned.rename(columns={'NAME_1': 'Name'}, inplace=True)
-
-# Add a placeholder for descriptions (if not available)
-df_cleaned['Description'] = "Tourist attraction in Malaysia."
-
 # Save the cleaned data
 output_file = 'cleaned_tourist_attractions_from_shapefile.csv'
 df_cleaned.to_csv(output_file, index=False)
