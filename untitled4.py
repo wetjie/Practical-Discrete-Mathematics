@@ -1,3 +1,33 @@
+import streamlit as st
+import zipfile
+import io
+import os
+
+# 设置标题
+st.title("Streamlit ZIP File Uploader")
+
+# 文件上传控件
+uploaded_file = st.file_uploader("上传一个 ZIP 文件", type=["zip"])
+
+if uploaded_file:
+    # 将文件加载到内存
+    with zipfile.ZipFile(io.BytesIO(uploaded_file.read()), 'r') as z:
+        # 显示文件列表
+        file_list = z.namelist()
+        st.write("ZIP 文件内容:")
+        st.write(file_list)
+
+        # 解压文件
+        extract_dir = "extracted_files"
+        z.extractall(extract_dir)
+        st.success(f"文件已解压到 {extract_dir}")
+
+        # 显示解压后的文件路径
+        extracted_files = [os.path.join(extract_dir, f) for f in file_list]
+        st.write("解压后的文件路径:")
+        st.write(extracted_files)
+
+# 处理解压文件的逻辑可以在这里添加
 
 
 
