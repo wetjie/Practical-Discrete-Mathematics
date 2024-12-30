@@ -46,8 +46,6 @@ import os
 
 
 
-print(f"\nData cleaned and saved to {output_file}.")
-
 """b. Map visualisations                                                                                
 
 • Use any relevant and suitable python library to create an interactive map.
