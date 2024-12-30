@@ -34,13 +34,7 @@ if uploaded_file:
 import geopandas as gpd
 import pandas as pd
 
-# Upload the shapefile zip
-from google.colab import files
 
-print("Please upload your 'gadm41_MYS_shp.zip' file.")
-uploaded = files.upload()
-
-# Unzip the file
 import zipfile
 import os
 
