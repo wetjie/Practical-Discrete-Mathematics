@@ -1,43 +1,80 @@
 import streamlit as st
+import geopandas as gpd
+import pandas as pd
 import zipfile
-import io
 import os
 
 # 设置标题
-st.title("Streamlit ZIP File Uploader")
+st.title("马来西亚旅游景点数据处理")
 
-# 文件上传控件
-uploaded_file = st.file_uploader("上传一个 ZIP 文件", type=["zip"])
+# 上传 ZIP 文件
+uploaded_file = st.file_uploader("上传包含马来西亚地图的 ZIP 文件", type=["zip"])
 
 if uploaded_file:
-    # 将文件加载到内存
-    with zipfile.ZipFile(io.BytesIO(uploaded_file.read()), 'r') as z:
-        # 显示文件列表
-        file_list = z.namelist()
-        st.write("ZIP 文件内容:")
-        st.write(file_list)
+    # 保存上传的文件
+    zip_file_path = "uploaded_file.zip"
+    with open(zip_file_path, "wb") as f:
+        f.write(uploaded_file.read())
+    
+    # 解压 ZIP 文件
+    with zipfile.ZipFile(zip_file_path, 'r') as zip_ref:
+        zip_ref.extractall("shapefile_data")
+    
+    st.success("ZIP 文件解压成功！")
 
-        # 解压文件
-        extract_dir = "extracted_files"
-        z.extractall(extract_dir)
-        st.success(f"文件已解压到 {extract_dir}")
+    # 查找 Shapefile 路径
+    shapefile_dir = "shapefile_data"
+    shapefile_path = None
+    for root, dirs, files in os.walk(shapefile_dir):
+        for file in files:
+            if file.endswith(".shp"):
+                shapefile_path = os.path.join(root, file)
+                break
+        if shapefile_path:
+            break
 
-        # 显示解压后的文件路径
-        extracted_files = [os.path.join(extract_dir, f) for f in file_list]
-        st.write("解压后的文件路径:")
-        st.write(extracted_files)
-
-# 处理解压文件的逻辑可以在这里添加
-
-
-
-import geopandas as gpd
-import pandas as pd
-
-
-import zipfile
-import os
-
+    if shapefile_path:
+        st.write(f"找到 Shapefile 文件: {shapefile_path}")
+        
+        # 加载 Shapefile 数据
+        try:
+            gdf = gpd.read_file(shapefile_path)
+            st.success("Shapefile 加载成功！")
+            
+            # 显示数据预览
+            st.write("数据预览:")
+            st.write(gdf.head())
+            
+            # 添加经纬度信息
+            gdf['Latitude'] = gdf.geometry.centroid.y
+            gdf['Longitude'] = gdf.geometry.centroid.x
+            
+            # 选择相关列
+            df_cleaned = gdf[['NAME_1', 'Latitude', 'Longitude']].copy()
+            df_cleaned.rename(columns={'NAME_1': 'Name'}, inplace=True)
+            df_cleaned['Description'] = "Tourist attraction in Malaysia."
+            
+            # 显示清理后的数据
+            st.write("清理后的数据:")
+            st.write(df_cleaned)
+            
+            # 保存清理后的数据
+            output_file = "cleaned_tourist_attractions_from_shapefile.csv"
+            df_cleaned.to_csv(output_file, index=False)
+            st.success(f"清理后的数据已保存到 {output_file}")
+            
+            # 提供下载链接
+            with open(output_file, "rb") as f:
+                st.download_button(
+                    label="下载清理后的数据",
+                    data=f,
+                    file_name="cleaned_tourist_attractions_from_shapefile.csv",
+                    mime="text/csv"
+                )
+        except Exception as e:
+            st.error(f"加载 Shapefile 失败: {e}")
+    else:
+        st.error("未找到有效的 Shapefile 文件，请确保 ZIP 文件中包含 .shp 文件。")
 
 
 
