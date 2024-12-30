@@ -44,9 +44,7 @@ import os
 
 
 
-# Save the cleaned data
-output_file = 'cleaned_tourist_attractions_from_shapefile.csv'
-df_cleaned.to_csv(output_file, index=False)
+
 
 print(f"\nData cleaned and saved to {output_file}.")
 
