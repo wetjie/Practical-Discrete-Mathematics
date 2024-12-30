@@ -194,7 +194,7 @@ tourist_map
 • Host the map on streamlit / Shiny for python / any relevant server/ cloud.
 """
 
-!pip install folium pandas streamlit streamlit-folium
+
 
 import folium
 import pandas as pd
