@@ -40,13 +40,7 @@ import os
 
 
 
-# Load the shapefile using GeoPandas
-shapefile_path = 'gadm41_MYS_shp/gadm41_MYS_1.shp'  # Adjust path if necessary
-gdf = gpd.read_file(shapefile_path)
 
-# Preview the data
-print("Shapefile loaded successfully. Here is the first few rows of the data:")
-print(gdf.head())
 
 # Extract relevant data (e.g., Name, Latitude, Longitude, and Description)
 # Assuming the shapefile contains relevant information in columns
