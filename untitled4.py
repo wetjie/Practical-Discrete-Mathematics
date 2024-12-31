@@ -47,25 +47,7 @@ df_cleaned.to_csv(output_file, index=False)
 
 print(f"\nData cleaned and saved to {output_file}.")
 
-# File upload feature
-st.title("Map of Tourist Attractions in Malaysia")
-uploaded_file = st.file_uploader("Upload a CSV file containing tourist attractions", type=["csv"])
 
-if uploaded_file:
-    # Read the CSV file uploaded by the user
-    df = pd.read_csv(uploaded_file)
-
-    # Verify if the required columns are present
-    required_columns = {'Name', 'Description', 'Latitude', 'Longitude'}
-    if not required_columns.issubset(df.columns):
-        st.error(f"The CSV file is missing the required columns: {required_columns - set(df.columns)}")
-    else:
-        # Automatically classify attraction types (if not provided)
-        if 'Type' not in df.columns:
-            df['Type'] = [
-                'Natural' if i % 3 == 0 else 'Cultural' if i % 3 == 1 else 'Historical'
-                for i in range(len(df))
-            ]
 # Load your dataset (replace with the path to your actual CSV file)
 data_file = 'cleaned_tourist_attractions_from_shapefile.csv'  # Path to your CSV file
 df = pd.read_csv(data_file)
