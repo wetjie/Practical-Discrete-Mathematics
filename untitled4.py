@@ -3,9 +3,7 @@ import pandas as pd
 import streamlit as st
 from streamlit_folium import st_folium
 
-# File upload feature
-st.title("Map of Tourist Attractions in Malaysia")
-uploaded_file = st.file_uploader("Upload a CSV file containing tourist attractions", type=["csv"])
+
 
 if uploaded_file:
     # Read the CSV file uploaded by the user
