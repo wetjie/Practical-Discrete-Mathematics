@@ -3,13 +3,15 @@ import pandas as pd
 import streamlit as st
 from streamlit_folium import st_folium
 
-# File upload feature
+# Title
 st.title("Map of Tourist Attractions in Malaysia")
-uploaded_file = st.file_uploader("Upload a CSV file containing tourist attractions", type=["csv"])
 
-if uploaded_file:
-    # Read the CSV file uploaded by the user
-    df = pd.read_csv(uploaded_file)
+# Specify the path to the CSV file
+csv_file_path = "tourist_attractions.csv"  # Replace with the actual path to your CSV file
+
+try:
+    # Read the CSV file
+    df = pd.read_csv(csv_file_path)
 
     # Verify if the required columns are present
     required_columns = {'Name', 'Description', 'Latitude', 'Longitude'}
@@ -23,7 +25,7 @@ if uploaded_file:
                 for i in range(len(df))
             ]
 
-        # Display the first few rows of the uploaded data
+        # Display the first few rows of the data
         st.write("Loaded data:")
         st.write(df.head())
 
@@ -93,3 +95,5 @@ if uploaded_file:
         # Display total number of attractions in the sidebar
         st.sidebar.header("Overview of Tourist Attractions")
         st.sidebar.write(f"Total number of attractions: {total_attractions}")
+except FileNotFoundError:
+    st.error(f"The file {csv_file_path} was not found. Please ensure the file exists at the specified path.")
