@@ -7,7 +7,7 @@ from streamlit_folium import st_folium
 st.title("Map of Tourist Attractions in Malaysia")
 
 # Specify the path to the CSV file
-csv_file_path = "cleaned_tourist_attractions_from_shapefile.csv"  # Replace with the actual path to your CSV file
+csv_file_path = "cleaned_tourist_attractions_from_shapefile (1).csv"  # Replace with the actual path to your CSV file
 
 try:
     # Read the CSV file
